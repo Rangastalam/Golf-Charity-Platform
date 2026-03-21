@@ -137,18 +137,24 @@ export async function POST(request) {
  * @param {import('stripe').Stripe.Checkout.Session} session
  */
 async function handleCheckoutCompleted(session) {
-  const { userId, plan } = session.metadata ?? {}
+  console.log('checkout.session.completed — session metadata:', session.metadata)
+  console.log('checkout.session.completed — customer:', session.customer)
+  console.log('checkout.session.completed — subscription:', session.subscription)
 
-  if (!userId || !plan) {
+  const userId = session.metadata?.userId
+  const plan   = session.metadata?.plan
+
+  if (!userId) {
     console.error(
-      'checkout.session.completed: missing userId or plan in metadata',
-      { sessionId: session.id }
+      'checkout.session.completed: userId missing from session metadata — cannot link subscription',
+      { sessionId: session.id, metadata: session.metadata }
     )
+    // Return without throwing so Stripe receives 200 and does not retry
     return
   }
 
-  if (!PLANS[plan]) {
-    console.error('checkout.session.completed: unknown plan', plan)
+  if (!plan || !PLANS[plan]) {
+    console.error('checkout.session.completed: unknown or missing plan in metadata', { plan, sessionId: session.id })
     return
   }
 
@@ -167,7 +173,7 @@ async function handleCheckoutCompleted(session) {
 
   const mappedStatus = STRIPE_STATUS_MAP[stripeSubscription.status] ?? 'inactive'
 
-  const { error } = await supabaseAdmin.from('subscriptions').upsert(
+  const { data, error } = await supabaseAdmin.from('subscriptions').upsert(
     {
       user_id: userId,
       stripe_customer_id: String(session.customer),
@@ -183,6 +189,9 @@ async function handleCheckoutCompleted(session) {
     },
     { onConflict: 'user_id' }
   )
+
+  console.log('Subscription saved:', data)
+  console.log('Subscription error:', error)
 
   if (error) {
     throw new Error(
@@ -212,11 +221,11 @@ async function handleSubscriptionUpdated(subscription) {
 
   // Derive plan from the price ID if possible (handles plan changes)
   const priceId = subscription.items.data[0]?.price?.id
-  const matchedPlan = priceId
-    ? Object.values(PLANS).find(
-        (p) => process.env[p.stripePriceEnvKey] === priceId
-      )
-    : null
+  const priceIdToPlan = {
+    [process.env.STRIPE_PRICE_MONTHLY]: 'monthly',
+    [process.env.STRIPE_PRICE_YEARLY]:  'yearly',
+  }
+  const matchedPlan = priceId ? (priceIdToPlan[priceId] ?? null) : null
 
   /** @type {Record<string, unknown>} */
   const updates = {
@@ -230,7 +239,7 @@ async function handleSubscriptionUpdated(subscription) {
   }
 
   if (matchedPlan) {
-    updates.plan = matchedPlan.id
+    updates.plan = matchedPlan
   }
 
   const { error } = await supabaseAdmin
