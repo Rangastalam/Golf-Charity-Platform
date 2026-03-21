@@ -3,7 +3,7 @@
   "buildCommand": "next build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "nodeVersion": "20.x",
+  
   "redirects": [
     {
       "source": "/home",
