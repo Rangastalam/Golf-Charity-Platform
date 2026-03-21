@@ -1,0 +1,2 @@
+-- Superseded. All triggers are now in 001_schema.sql.
+-- This file is intentionally empty.

@@ -1,0 +1,2 @@
+-- Superseded. All RLS policies are now in 001_schema.sql.
+-- This file is intentionally empty.
