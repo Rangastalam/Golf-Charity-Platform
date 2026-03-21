@@ -10,6 +10,14 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PLANS, REVENUE_SPLIT, ROUTES } from '@/constants'
 
+const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
+const yearlyPriceId  = process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
+
+const PRICE_IDS = {
+  monthly: monthlyPriceId,
+  yearly:  yearlyPriceId,
+}
+
 const charityPct = Math.round(REVENUE_SPLIT.CHARITY    * 100)
 const prizePct   = Math.round(REVENUE_SPLIT.PRIZE_POOL * 100)
 
@@ -29,9 +37,9 @@ const YEARLY_EXTRA = [
 ]
 
 /**
- * @param {{ plan: object, isLoggedIn: boolean, isHighlighted: boolean }} props
+ * @param {{ plan: object, priceId: string|undefined, isLoggedIn: boolean, isHighlighted: boolean }} props
  */
-function PricingCard({ plan, isLoggedIn, isHighlighted }) {
+function PricingCard({ plan, priceId, isLoggedIn, isHighlighted }) {
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
   const router = useRouter()
@@ -48,13 +56,13 @@ function PricingCard({ plan, isLoggedIn, isHighlighted }) {
       const res  = await fetch('/api/subscriptions/create-checkout', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ plan: plan.id }),
+        body:    JSON.stringify({ priceId }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Something went wrong. Please try again.'); return }
       if (!data.url) { setError('No checkout URL returned. Please try again.'); return }
       window.location.href = data.url
-    } catch (err) {
+    } catch {
       setError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
@@ -138,13 +146,13 @@ function PricingCard({ plan, isLoggedIn, isHighlighted }) {
       {/* CTA */}
       <button
         onClick={handleSubscribe}
-        disabled={loading}
+        disabled={loading || !priceId}
         className={[
           'w-full py-4 rounded-2xl text-sm font-black transition-all duration-200 min-h-[52px]',
           isHighlighted
             ? 'bg-amber-400 hover:bg-amber-300 text-gray-950 shadow-amber-400/20 shadow-lg hover:scale-[1.02]'
             : 'bg-gray-800 hover:bg-gray-700 text-white',
-          loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer',
+          loading || !priceId ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer',
         ].join(' ')}
       >
         {loading ? (
@@ -225,6 +233,7 @@ export default function PricingCards({ isLoggedIn }) {
           <PricingCard
             key={`primary-${visiblePlan.id}`}
             plan={visiblePlan}
+            priceId={PRICE_IDS[visiblePlan.id]}
             isLoggedIn={isLoggedIn}
             isHighlighted={yearly}
           />
@@ -234,6 +243,7 @@ export default function PricingCards({ isLoggedIn }) {
           <PricingCard
             key={`other-${otherPlan.id}`}
             plan={otherPlan}
+            priceId={PRICE_IDS[otherPlan.id]}
             isLoggedIn={isLoggedIn}
             isHighlighted={false}
           />

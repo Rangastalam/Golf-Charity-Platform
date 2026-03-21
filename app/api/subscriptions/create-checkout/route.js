@@ -17,7 +17,7 @@ import { cookies } from 'next/headers'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { stripe } from '@/lib/stripe'
-import { PLANS, ROUTES } from '@/constants'
+import { ROUTES } from '@/constants'
 
 /**
  * POST /api/subscriptions/create-checkout
@@ -48,26 +48,21 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
     }
 
-    const { plan } = body
+    const { priceId } = body
 
-    if (!plan || !PLANS[plan]) {
+    if (!priceId || typeof priceId !== 'string' || !priceId.startsWith('price_')) {
       return NextResponse.json(
-        { error: 'plan must be "monthly" or "yearly"' },
+        { error: 'Invalid or missing priceId' },
         { status: 400 }
       )
     }
 
-    const planConfig = PLANS[plan]
-
-    // ── Resolve Stripe price ID ───────────────────────────────────────────────
-    const priceId = process.env[planConfig.stripePriceEnvKey]
-    if (!priceId) {
-      console.error(`Missing env var: ${planConfig.stripePriceEnvKey}`)
-      return NextResponse.json(
-        { error: 'Pricing not configured — contact support' },
-        { status: 500 }
-      )
+    // Derive plan label for metadata from the known price IDs
+    const planByPriceId = {
+      [process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID]: 'monthly',
+      [process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID]:  'yearly',
     }
+    const plan = planByPriceId[priceId] ?? 'unknown'
 
     // ── Guard: reject if user already has an active subscription ─────────────
     const { data: activeCheck } = await supabase
