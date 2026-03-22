@@ -269,18 +269,3 @@ golf-charity-platform/
 
 ---
 
-## PRD Compliance
-
-All 15 prompts of the Product Requirements Document are implemented:
-
-| Prompts | Area |
-|---|---|
-| 1–3 | Authentication, member dashboard, score management |
-| 4–6 | Draw engine, prize pools, winner management |
-| 7–9 | Charities, Stripe subscriptions, admin panel |
-| 10 | Draws admin UI, winner proof upload |
-| 11 | Public pages — homepage, how-it-works, pricing, charities |
-| 12 | Email notifications via Resend |
-| 13 | Performance optimisation + security hardening |
-| 14 | Error handling, toast system, API edge cases, QA checklist |
-| 15 | Password reset flow + production deployment |
