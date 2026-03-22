@@ -264,7 +264,7 @@ golf-charity-platform/
 - **Admin dashboard** — Draw lifecycle, winner verification + bulk pay, charity + user management
 - **Email notifications** — Welcome, draw results, and winner emails via Resend
 - **Full password reset flow** — Forgot password → email → token verification → update
-- **Security** — CSP headers, rate limiting, RLS on all tables, HSTS, no X-Powered-By
+- 
 - **Performance** — next/font, AVIF/WebP images, compression, strict mode, package optimisation
 
 ---
