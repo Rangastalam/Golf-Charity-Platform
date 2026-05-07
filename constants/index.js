@@ -6,56 +6,56 @@
 // ─── Subscription Tiers ───────────────────────────────────────────────────────
 
 /** @type {Object.<string, {id: string, name: string, priceMonthly: number, stripePriceEnvKey: string, drawEntries: number, color: string, features: string[]}>} */
-// export const SUBSCRIPTION_TIERS = {
-//   BRONZE: {
-//     id: 'bronze',
-//     name: 'Bronze',
-//     priceMonthly: 9.99,
-//     stripePriceEnvKey: 'STRIPE_PRICE_BRONZE',
-//     drawEntries: 1,
-//     color: 'amber-700',
-//     features: [
-//       '1 draw entry per month',
-//       'Access to charity leaderboard',
-//       'Monthly score tracking',
-//       'Community forum access',
-//     ],
-//   },
-//   SILVER: {
-//     id: 'silver',
-//     name: 'Silver',
-//     priceMonthly: 24.99,
-//     stripePriceEnvKey: 'STRIPE_PRICE_SILVER',
-//     drawEntries: 3,
-//     color: 'slate-400',
-//     features: [
-//       '3 draw entries per month',
-//       'Handicap tracking',
-//       'Priority charity voting',
-//       'Monthly score tracking',
-//       'Community forum access',
-//       'Early draw results',
-//     ],
-//   },
-//   GOLD: {
-//     id: 'gold',
-//     name: 'Gold',
-//     priceMonthly: 49.99,
-//     stripePriceEnvKey: 'STRIPE_PRICE_GOLD',
-//     drawEntries: 6,
-//     color: 'yellow-500',
-//     features: [
-//       '6 draw entries per month',
-//       'Handicap tracking',
-//       'Charity nomination rights',
-//       'Priority charity voting',
-//       'Monthly score tracking',
-//       'Community forum access',
-//       'Early draw results',
-//       'Annual gala invitation',
-//     ],
-//   },
-// }
+export const SUBSCRIPTION_TIERS = {
+  BRONZE: {
+    id: 'bronze',
+    name: 'Bronze',
+    priceMonthly: 9.99,
+    stripePriceEnvKey: 'STRIPE_PRICE_BRONZE',
+    drawEntries: 1,
+    color: 'amber-700',
+    features: [
+      '1 draw entry per month',
+      'Access to charity leaderboard',
+      'Monthly score tracking',
+      'Community forum access',
+    ],
+  },
+  SILVER: {
+    id: 'silver',
+    name: 'Silver',
+    priceMonthly: 24.99,
+    stripePriceEnvKey: 'STRIPE_PRICE_SILVER',
+    drawEntries: 3,
+    color: 'slate-400',
+    features: [
+      '3 draw entries per month',
+      'Handicap tracking',
+      'Priority charity voting',
+      'Monthly score tracking',
+      'Community forum access',
+      'Early draw results',
+    ],
+  },
+  GOLD: {
+    id: 'gold',
+    name: 'Gold',
+    priceMonthly: 49.99,
+    stripePriceEnvKey: 'STRIPE_PRICE_GOLD',
+    drawEntries: 6,
+    color: 'yellow-500',
+    features: [
+      '6 draw entries per month',
+      'Handicap tracking',
+      'Charity nomination rights',
+      'Priority charity voting',
+      'Monthly score tracking',
+      'Community forum access',
+      'Early draw results',
+      'Annual gala invitation',
+    ],
+  },
+}
 
 /** @type {string[]} Tier IDs in ascending order */
 export const TIER_ORDER = ['bronze', 'silver', 'gold']
