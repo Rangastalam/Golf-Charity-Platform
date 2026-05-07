@@ -108,11 +108,12 @@ export default async function HomePage() {
   const third   = prizePool?.third   ?? 4100
 
   return (
-    <div className="bg-gray-950 text-white min-h-screen">
+    <div className="bg-gray-950 text-white min-h-screen ">
       <Navbar />
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden ">
+        <div className='bg-[url("./assets/4_1500.jpg")] w-full bg-cover bg-center absolute inset-0 opacity-35  '> </div>
         {/* Animated background */}
         <HeroParticles />
 
@@ -127,7 +128,7 @@ export default async function HomePage() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-black leading-[1.05] tracking-tight mb-6">
             Play Golf.{' '}
             <span className="text-amber-400">Fund Lives.</span>
             <br className="hidden sm:block" />
